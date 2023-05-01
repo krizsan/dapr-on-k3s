@@ -1,0 +1,50 @@
+# Install Dapr CLI locally and Dapr in the local K3S cluster being the current context of kubectl.
+# Also installs all dependencies needed by this playbook.
+- name: Dapr in K3S
+  hosts: localhost
+  gather_facts: true
+  vars:
+    ansible_connection: local
+  tasks:
+    - name: Install Dapr CLI
+      ansible.builtin.include_tasks: tasks/install-dapr-cli.yml
+    # Install the prerequisites for the Ansible kubernetes collection.
+    - name: Install kubernetes collection prerequisites.
+      ansible.builtin.pip:
+        name:
+          - kubernetes
+          - jsonpatch
+          - pyyaml
+    # Install the Ansible kubernetes collection.
+    - name: Install kubernetes collection.
+      ansible.builtin.shell: "ansible-galaxy collection install kubernetes.core"
+    # Deploy Dapr on the local K3S cluster using the K3S Helm controller.
+    # Dapr installation documentation reference:
+    # https://docs.dapr.io/operations/hosting/kubernetes/kubernetes-deploy/
+    - name: Deploy Dapr to K3S
+      kubernetes.core.k8s:
+        state: present
+        src: k8s/install-dapr-kubernetes.yml
+    - name: Create environment namespace.
+      kubernetes.core.k8s:
+        state: present
+        src: k8s/dapr-create-env-namespace.yml
+        wait: true
+    # Deploy Redis and configures Dapr to use Redis for state store and pub/sub as described here:
+    # https://docs.dapr.io/getting-started/tutorials/configure-state-pubsub/
+    - name: Install Redis.
+      kubernetes.core.k8s:
+        state: present
+        src: k8s/dapr-redis.yml
+        wait: true
+        wait_condition:
+          status: true
+    - name: Install Redis statestore and pubsub for the development environment.
+      kubernetes.core.k8s:
+        state: present
+        src: k8s/dapr-redis-statestore-pubsub.yml
+        wait: true
+      retries: 100
+      delay: 5
+      register: result
+      until: result is succeeded

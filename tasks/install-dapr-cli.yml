@@ -1,0 +1,13 @@
+# Install the Dapr CLI as described here:
+# https://docs.dapr.io/getting-started/install-dapr-cli/
+# Will prompt for an administrator password if required.
+---
+- name: Install Dapr CLI on MacOS
+  ansible.builtin.shell: "curl -fsSL https://raw.githubusercontent.com/dapr/cli/master/install/install.sh | /bin/bash"
+  when: ansible_os_family == "Darwin"
+- name: Install Dapr CLI on operating systems in the Debian family (Ubuntu, Debian etc).
+  ansible.builtin.shell: "wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash"
+  when: ansible_os_family == "Debian"
+- name: Install Dapr CLI on Windows.
+  ansible.builtin.shell: 'powershell -Command "iwr -useb https://raw.githubusercontent.com/dapr/cli/master/install/install.ps1 | iex"'
+  when: ansible_os_family == "Windows"

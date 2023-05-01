@@ -1,0 +1,24 @@
+# Install Redis in the development environment.
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: redis
+  # Namespace in which the Redis Helm chart job will be run.
+  namespace: development
+spec:
+  # Helm chart repository. Does not have to be defined in the K3S cluster prior to deploy of this configuration.
+  repo: https://charts.bitnami.com/bitnami
+  # Name of Helm chart to deploy
+  chart: redis
+  # Namespace to which Redis will be deployed.
+  targetNamespace: development
+  # Modified configuration of the Helm chart.
+  valuesContent: |-
+    image:
+      tag: 6.2
+    architecture: standalone
+    global:
+      redis:
+        password: "secret!"
+      ha:
+        enabled: true

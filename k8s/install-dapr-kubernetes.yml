@@ -1,0 +1,31 @@
+# Creates namespace into which Dapr will be deployed.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dapr-system
+---
+# Install Dapr using the Helm controller
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  # Name of the Helm chart to use.
+  name: dapr
+  # Namespace in which the Helm chart job will be run.
+  namespace: kube-system
+spec:
+  # Helm chart repository. Does not have to be defined in the K3S cluster prior to deploy of this configuration.
+  repo: https://dapr.github.io/helm-charts/
+  # Name of Helm chart to deploy
+  chart: dapr
+  # Namespace to which Dapr will be deployed.
+  targetNamespace: dapr-system
+  # Delete installation if it fails. Also implies waiting for installation completion.
+  atomic: true
+  # Modified configuration of the Helm chart.
+  # Add any values from the Helm chart here that are to have a value that is not
+  # the same as the value found in the Helm chart.
+  valuesContent: |-
+    global:
+      # Enable Dapr high-availability 
+      ha:
+        enabled: true

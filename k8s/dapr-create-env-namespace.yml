@@ -1,0 +1,5 @@
+# Creates namespace into which Redis for Dapr will be deployed.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: development
