@@ -10,6 +10,9 @@ More information on Dapr: https://dapr.io/
 Install using:<br/>
 ```ansible-playbook install-dapr.yml```
 
+After the installation has completed, view the Dapr dashboard in a browser using the following command:<br/>
+```dapr dashboard -k```
+
 ## Prerequisites
 Ansible shall be installed on the local computer.<br/>
 A K3S cluster, preferably as installed using https://github.com/krizsan/k3s-cluster-ansible,
