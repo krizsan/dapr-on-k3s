@@ -39,7 +39,9 @@
         wait: true
         wait_condition:
           status: true
-    - name: Install Redis statestore and pubsub for the development environment.
+    # Need a retry on the installation of state store and pub/sub component creation
+    # since they will fail if Redis is not ready.
+    - name: Install Redis state store and pub/sub for the development environment.
       kubernetes.core.k8s:
         state: present
         src: k8s/dapr-redis-statestore-pubsub.yml
