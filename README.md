@@ -25,3 +25,12 @@ Having installed Dapr and the state store and pub/sub components, the Dapr CLI c
 ## Dapr Dashboard
 With Dapr installed, the Dapr dashboard can be viewed in a browser using the following command:<br/>
 ```dapr dashboard -k```
+
+## Redis stack
+In addition to installing Redis as state store and pub/sub for Dapr, the entire Redis stack is installed into the K3S cluster.<br/>
+To view the Redis stack web UI, execute the following command in a terminal windows:<br/>
+```kubectl port-forward -n development svc/redis-stack 8001:8001```<br/>
+Then open the URL below in a browser on the same computer as the kubectl command above is executed:<br/>
+```http://localhost:8001```<br/>
+<br/>
+For additional information on the Redis stack, please refer to: https://redis.io/docs/about/about-stack/

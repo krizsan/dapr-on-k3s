@@ -47,3 +47,4 @@ spec:
   targetNamespace: dapr-system
   # Delete installation if it fails. Also implies waiting for installation completion.
   atomic: true
+

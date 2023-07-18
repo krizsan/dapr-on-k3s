@@ -1,21 +1,25 @@
-# Install Redis in the development environment.
+# Install Redis stack in the development environment.
+#
+# To access the Redis stack web UI, launch the following command:
+# kubectl port-forward -n development svc/redis-stack 8001:8001
+# Then open the URL http://localhost:8001 in a browser on the same computer as the port forwarding
+# command above was started.
+#
 apiVersion: helm.cattle.io/v1
 kind: HelmChart
 metadata:
-  name: redis
+  name: redis-stack
   # Namespace in which the Redis Helm chart job will be run.
   namespace: development
 spec:
   # Helm chart repository. Does not have to be defined in the K3S cluster prior to deploy of this configuration.
-  repo: https://charts.bitnami.com/bitnami
+  repo: https://redis-stack.github.io/helm-redis-stack/
   # Name of Helm chart to deploy
-  chart: redis
+  chart: redis-stack
   # Namespace to which Redis will be deployed.
   targetNamespace: development
   # Modified configuration of the Helm chart.
   valuesContent: |-
-    image:
-      tag: 6.2
     architecture: standalone
     global:
       redis:
