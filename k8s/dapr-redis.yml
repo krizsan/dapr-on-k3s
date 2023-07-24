@@ -1,7 +1,7 @@
-# Install Redis stack in the development environment.
+# Install Redis stack in the selected namespace.
 #
 # To access the Redis stack web UI, launch the following command:
-# kubectl port-forward -n development svc/redis-stack 8001:8001
+# kubectl port-forward svc/redis-stack 8001:8001
 # Then open the URL http://localhost:8001 in a browser on the same computer as the port forwarding
 # command above was started.
 #
@@ -10,14 +10,14 @@ kind: HelmChart
 metadata:
   name: redis-stack
   # Namespace in which the Redis Helm chart job will be run.
-  namespace: development
+  namespace: "{{ k8s_namespace }}"
 spec:
   # Helm chart repository. Does not have to be defined in the K3S cluster prior to deploy of this configuration.
   repo: https://redis-stack.github.io/helm-redis-stack/
   # Name of Helm chart to deploy
   chart: redis-stack
   # Namespace to which Redis will be deployed.
-  targetNamespace: development
+  targetNamespace: "{{ k8s_namespace }}"
   # Modified configuration of the Helm chart.
   valuesContent: |-
     architecture: standalone
@@ -25,4 +25,14 @@ spec:
       redis:
         password: "secret!"
       ha:
-        enabled: true
+        enabled: false
+---
+# Create a secret that contain the above Redis password.
+apiVersion: v1
+data:
+  redis-password: c2VjcmV0IQ==
+kind: Secret
+metadata:
+  name: redis
+  namespace: "{{ k8s_namespace }}"
+type: Opaque

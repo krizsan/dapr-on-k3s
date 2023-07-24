@@ -1,15 +1,15 @@
-# Create the Dapr state store component backed by Redis for the development environment.
+# Create the Dapr state store component backed by Redis in the selected namespace.
 apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
   name: statestore
-  namespace: development
+  namespace: "{{ k8s_namespace }}"
 spec:
   type: state.redis
   version: v1
   metadata:
     - name: redisHost
-      value: localhost:6379
+      value: "redis-stack.{{ k8s_namespace }}.svc.cluster.local:6379"
     - name: redisPassword
       secretKeyRef:
         name: redis
@@ -20,13 +20,13 @@ apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
   name: pubsub
-  namespace: development
+  namespace: "{{ k8s_namespace }}"
 spec:
   type: pubsub.redis
   version: v1
   metadata:
     - name: redisHost
-      value: redis-master.dapr-system.svc.cluster.local:6379
+      value: "redis-stack.{{ k8s_namespace }}.svc.cluster.local:6379"
     - name: redisPassword
       secretKeyRef:
         name: redis
